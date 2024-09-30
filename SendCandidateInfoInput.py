@@ -1110,26 +1110,52 @@ def check_keywords_in_subject(subject):
 
     return matching_candidates
 
+# def send_reply(msg, subject, matching_candidates):
+#     try:
+#         server = smtplib.SMTP(smtp_server, smtp_port)
+#         server.starttls()
+#         server.login(SourceUsername, SourcePassword)
+
+#         reply_to_email = msg['Reply-To'] if msg['Reply-To'] else msg['From']
+#         body_html = create_html_table(matching_candidates)
+#         msg_out = MIMEMultipart()
+#         msg_out['From'] = SourceUsername
+#         msg_out['To'] = reply_to_email
+#         msg_out['Subject'] = 'Re: ' + subject
+#         msg_out.attach(MIMEText(body_html, 'html'))
+
+#         server.send_message(msg_out)
+#         print(f'Sent reply to: {reply_to_email}, Subject: {msg_out["Subject"]}')
+#     except Exception as e:
+#         print(f"Error sending reply: {e}")
+#     finally:
+#         server.quit()
+
 def send_reply(msg, subject, matching_candidates):
+    """Send a reply to the original email with matching candidates, redirecting replies to hr@seafysoft.com."""
     try:
-        server = smtplib.SMTP(smtp_server, smtp_port)
-        server.starttls()
-        server.login(SourceUsername, SourcePassword)
+        with smtplib.SMTP(smtp_server, smtp_port) as server:
+            server.starttls()
+            server.login(SourceUsername, SourcePassword)
 
-        reply_to_email = msg['Reply-To'] if msg['Reply-To'] else msg['From']
-        body_html = create_html_table(matching_candidates)
-        msg_out = MIMEMultipart()
-        msg_out['From'] = SourceUsername
-        msg_out['To'] = reply_to_email
-        msg_out['Subject'] = 'Re: ' + subject
-        msg_out.attach(MIMEText(body_html, 'html'))
+            reply_to_email = msg['Reply-To'] if msg['Reply-To'] else msg['From']
+            body_html = create_html_table(matching_candidates)
+            msg_out = MIMEMultipart()
+            msg_out['From'] = SourceUsername
+            msg_out['To'] = reply_to_email
+            msg_out['Subject'] = 'Re: ' + subject
+            
+            # Set the Reply-To header to the HR email address
+            msg_out.add_header('Reply-To', 'hr@seafysoft.com')
+            
+            msg_out.attach(MIMEText(body_html, 'html'))
 
-        server.send_message(msg_out)
-        print(f'Sent reply to: {reply_to_email}, Subject: {msg_out["Subject"]}')
+            server.send_message(msg_out)
+            print(f'Sent reply to: {reply_to_email}, Subject: {msg_out["Subject"]}')
+            # logging.info(f'Sent reply to: {reply_to_email}, Subject: {msg_out["Subject"]}')
     except Exception as e:
         print(f"Error sending reply: {e}")
-    finally:
-        server.quit()
+
 
 def create_html_table(candidates):
     html = '''<html>
