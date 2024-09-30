@@ -1172,11 +1172,11 @@ def create_html_table(candidates):
             <p>Here are the candidates that match your requirements:</p>
             <table style="border-collapse: collapse; width: 100%;">
                 <tr>
-                    <th style="border: 1px solid black; padding: 8px;">Name</th>
-                    <th style="border: 1px solid black; padding: 8px;">Job Title</th>
-                    <th style="border: 1px solid black; padding: 8px;">Experience</th>
-                    <th style="border: 1px solid black; padding: 8px;">Location</th>
-                    <th style="border: 1px solid black; padding: 8px;">Status</th>
+                    <th style="border: 1px solid black; padding: 8px; background-color: #4375d3; color: white;">Name</th>
+                    <th style="border: 1px solid black; padding: 8px; background-color: #4375d3; color: white;">Job Title</th>
+                    <th style="border: 1px solid black; padding: 8px; background-color: #4375d3; color: white;">Experience</th>
+                    <th style="border: 1px solid black; padding: 8px; background-color: #4375d3; color: white;">Location</th>
+                    <th style="border: 1px solid black; padding: 8px; background-color: #4375d3; color: white;">Status</th>
                 </tr>'''
 
     for candidate in candidates:
@@ -1213,6 +1213,7 @@ def create_html_table(candidates):
     </html>'''
     
     return html_content
+
 
 def update_today_requirements(email_body, subject, msg):
     try:
