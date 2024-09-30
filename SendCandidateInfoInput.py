@@ -1103,7 +1103,7 @@ def check_keywords_in_subject(subject):
 
     if matching_keywords:
         for _, row in send_candidate_df.iterrows():
-            candidate_job_title = row['Title'].strip().lower()
+            candidate_job_title = row['JobTitle'].strip().lower()
             if any(keyword in candidate_job_title for keyword in matching_keywords):
                 matching_candidates.append(row.to_dict())
                 print(f"Matching candidate found: {row['Name']}")
@@ -1135,7 +1135,8 @@ def create_html_table(candidates):
     html = '''<html>
         <body>
             <h3>Hello,</h3>
-            <p>At <strong>Seafy Soft Solutions</strong>, we take pride in our team of highly skilled consultants...</p>
+            <p>At <strong>Seafy Soft Solutions</strong>, we take pride in our team of highly skilled consultants, who are ready to begin working on-site or remotely at your convenience. Whether you have immediate needs or future projects in mind, we are here to support you.</p>
+            <p>Should you have any questions or require further information, please feel free to contact me via email or phone. I look forward to the opportunity to assist you.</p>
             <h1><span style="background-color: yellow; padding: 0 5px;">Reach us at: hr@seafysoft.com</span></h1>
             <br/>
             <p>Here are the candidates that match your requirements:</p>
