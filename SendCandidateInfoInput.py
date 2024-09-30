@@ -986,6 +986,8 @@ import re
 import time
 from datetime import datetime
 import os
+import html
+
 
 # Login information
 SourceUsername = 'dailyrequriments@gmail.com'
@@ -1158,11 +1160,13 @@ def send_reply(msg, subject, matching_candidates):
 
 
 def create_html_table(candidates):
-    html = '''<html>
+    if not isinstance(candidates, list):
+        raise ValueError("candidates must be a list")
+    
+    html_content = '''<html>
         <body>
             <h3>Hello,</h3>
-            <p>At <strong>Seafy Soft Solutions</strong>, we take pride in our team of highly skilled consultants, who are ready to begin working on-site or remotely at your convenience. Whether you have immediate needs or future projects in mind, we are here to support you.</p>
-            <p>Should you have any questions or require further information, please feel free to contact me via email or phone. I look forward to the opportunity to assist you.</p>
+            <p>At <strong>Seafy Soft Solutions</strong>, we take pride in our team of highly skilled consultants...</p>
             <h1><span style="background-color: yellow; padding: 0 5px;">Reach us at: hr@seafysoft.com</span></h1>
             <br/>
             <p>Here are the candidates that match your requirements:</p>
@@ -1176,28 +1180,39 @@ def create_html_table(candidates):
                 </tr>'''
 
     for candidate in candidates:
-        html += f'''
+        if not isinstance(candidate, dict):
+            raise ValueError("Each candidate must be a dictionary")
+        
+        # Ensure all keys are present
+        required_keys = ["Name", "JobTitle", "Experience", "Location", "Status"]
+        for key in required_keys:
+            if key not in candidate:
+                raise ValueError(f"Candidate is missing required key: {key}")
+
+        html_content += f'''
                 <tr>
-                    <td style="border: 1px solid black; padding: 8px;">{candidate["Name"]}</td>
-                    <td style="border: 1px solid black; padding: 8px;">{candidate["JobTitle"]}</td>
-                    <td style="border: 1px solid black; padding: 8px;">{candidate["Experience"]}</td>
-                    <td style="border: 1px solid black; padding: 8px;">{candidate["Location"]}</td>
-                    <td style="border: 1px solid black; padding: 8px;">{candidate["Status"]}</td>
+                    <td style="border: 1px solid black; padding: 8px;">{html.escape(candidate["Name"])}</td>
+                    <td style="border: 1px solid black; padding: 8px;">{html.escape(candidate["JobTitle"])}</td>
+                    <td style="border: 1px solid black; padding: 8px;">{html.escape(candidate["Experience"])}</td>
+                    <td style="border: 1px solid black; padding: 8px;">{html.escape(candidate["Location"])}</td>
+                    <td style="border: 1px solid black; padding: 8px;">{html.escape(candidate["Status"])}</td>
                 </tr>'''
 
-    html += '''
+    html_content += '''
             </table>
             <p>Best regards,</p>
-            <h3>Swetha,</h3>
-            <h3>Seafy Soft Solutions</h3>
-            Email: hr@seafysoft.com <br>
-            Phone: +1 9105576339 <br>
-            <a href="https://seafysoft.com/">Seafysoft.com/</a> <br>
-            LinkedIn: <a href="https://www.linkedin.com/company/seafy-soft-solutions/">Seafy Soft Solutions</a>
+            <strong>Swetha</strong><br>
+            <em>Seafy Soft Solutions</em><br>
+            📧 <a href="mailto:hr@seafysoft.com">hr@seafysoft.com</a><br>
+            📞 +1 910-557-6339<br>
+            🌐 <a href="https://seafysoft.com/">Seafysoft.com</a><br>
+            🔗 <a href="https://www.linkedin.com/company/seafy-soft-solutions/">LinkedIn: Seafy Soft Solutions</a><br>
+            <br>
+            <em>Disclaimer: This email and any attachments are confidential and intended solely for the use of the individual or entity to whom they are addressed. If you have received this email in error, please notify the sender and delete it from your system. Unauthorized use, disclosure, or distribution of this communication is prohibited.</em>
         </body>
     </html>'''
     
-    return html
+    return html_content
 
 def update_today_requirements(email_body, subject, msg):
     try:
